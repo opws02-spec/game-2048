@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: candy-game
+  namespace: kids-games
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: candy-game
+  template:
+    metadata:
+      labels:
+        app: candy-game
+    spec:
+      containers:
+      - name: candy-game
+        image: lclarkmichalek/cookie-clicker:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: candy-game-service
+  namespace: kids-games
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: candy-game
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: candy-game-ingress
+  namespace: kids-games
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: candy.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: candy-game-service
+            port:
+              number: 80
