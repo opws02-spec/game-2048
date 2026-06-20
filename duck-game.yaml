@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: duck-game
-        image: mbeaudre/duckhunt:latest
+        image: devopsfaith/k8s-dino-game:latest
         ports:
         - containerPort: 80
 ---
