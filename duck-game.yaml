@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: duck-game
-        image: devopsfaith/k8s-dino-game:latest
+        image: pengbai/docker-supermario:latest
         ports:
         - containerPort: 80
 ---
