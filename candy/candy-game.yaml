@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: candy-game
-        image: lclarkmichalek/cookie-clicker:latest
+        image: clem16/flappy-bird:latest
         ports:
         - containerPort: 80
 ---
