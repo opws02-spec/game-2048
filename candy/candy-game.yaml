@@ -1,3 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: candy-game-html
+  namespace: kids-games
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Candy Tap Game</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <style>
+        body, html { height: 100%; margin: 0; background-color: #FFB6C1; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Comic Sans MS', sans-serif; user-select: none; transition: background-color 0.2s; touch-action: manipulation; }
+        h1 { font-size: 5rem; color: white; text-shadow: 3px 3px 6px rgba(0,0,0,0.3); pointer-events: none; margin: 0;}
+        p { font-size: 2rem; color: white; pointer-events: none; margin-top: 10px;}
+        .emoji { font-size: 8rem; pointer-events: none; margin-bottom: 20px; }
+      </style>
+    </head>
+    <body onclick="tap()" id="bg">
+      <div class="emoji" id="emoji">🍬</div>
+      <h1>Score: <span id="score">0</span></h1>
+      <p>Tap Anywhere!</p>
+      <script>
+        let score = 0;
+        const colors = ['#FFB6C1', '#87CEFA', '#98FB98', '#DDA0DD', '#F0E68C', '#FFA07A'];
+        const emojis = ['🍬', '🍭', '🍫', '🍩', '🍪', '🎈', '🌟', '🦄', '🐶'];
+        function tap() {
+          score++;
+          document.getElementById('score').innerText = score;
+          document.getElementById('bg').style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          document.getElementById('emoji').innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        }
+      </script>
+    </body>
+    </html>
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,9 +52,17 @@ spec:
     spec:
       containers:
       - name: candy-game
-        image: clem16/flappy-bird:latest
+        image: nginx:alpine
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: game-html
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      - name: game-html
+        configMap:
+          name: candy-game-html
 ---
 apiVersion: v1
 kind: Service
